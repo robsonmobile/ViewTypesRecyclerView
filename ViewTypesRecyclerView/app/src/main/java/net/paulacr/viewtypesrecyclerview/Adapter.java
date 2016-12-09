@@ -1,6 +1,7 @@
 package net.paulacr.viewtypesrecyclerview;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,9 +29,6 @@ public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         this.contactList = contactList;
         splitListsByCategory();
 
-        //adiciona espaço vazio para primeira categoria
-
-
         if(!familyList.isEmpty()) {
             recyclerData.add(null);
             recyclerData.addAll(familyList);
@@ -45,7 +43,6 @@ public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             recyclerData.add(null);
             recyclerData.addAll(workList);
         }
-
     }
 
     static class ViewHolderCategory extends RecyclerView.ViewHolder {
@@ -55,15 +52,19 @@ public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         public ViewHolderCategory(View view) {
             super(view);
+
+            categoryName = (TextView) view.findViewById(R.id.category_name);
+            categoryIcon = (ImageView) view.findViewById(R.id.category_icon);
         }
     }
 
     static class ViewHolderLetterIndex extends RecyclerView.ViewHolder {
 
-        private TextView categoryName;
+        private TextView index;
 
         public ViewHolderLetterIndex(View view) {
             super(view);
+            index = (TextView) view.findViewById(R.id.letter_index);
         }
     }
 
@@ -74,6 +75,8 @@ public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         public ViewHolderContactList(View view) {
             super(view);
+            contactName = (TextView) view.findViewById(R.id.name);
+            contactImage = (ImageView) view.findViewById(R.id.profile_image);
         }
     }
 
@@ -84,14 +87,14 @@ public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         if(viewType == VIEW_TYPE_CATEGORY) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.view_header_category, parent);
+                    .inflate(R.layout.view_header_category, parent, false);
 
             viewHolder = new ViewHolderCategory(view);
         } else {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.view_item_contact, parent);
+                    .inflate(R.layout.view_item_contact, parent, false);
 
-            viewHolder = new ViewHolderCategory(view);
+            viewHolder = new ViewHolderContactList(view);
         }
         return viewHolder;
     }
@@ -103,7 +106,15 @@ public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             ViewHolderCategory viewHolderCategory = (ViewHolderCategory) holder;
 
             //bind views
-            viewHolderCategory.categoryName.setText(recyclerData.get(position).getCategory().toString());
+            String categoria;
+            if(position == 0) {
+               categoria = "Family";
+            } else if(position == familyList.size() + 1) {
+                categoria = "Friends";
+            } else {
+                categoria = "Work";
+            }
+            viewHolderCategory.categoryName.setText(categoria);
 
         } else {
             ViewHolderContactList viewHolderContactList = (ViewHolderContactList) holder;
@@ -120,12 +131,15 @@ public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public int getItemViewType(int position) {
 
-        if(recyclerData == null) {
+        if(position == 0) {
+            return VIEW_TYPE_CATEGORY;
+        } else if(position == familyList.size() +1) {
+            return VIEW_TYPE_CATEGORY;
+        } else if(position == friendsList.size() + familyList.size() + 2) {
             return VIEW_TYPE_CATEGORY;
         } else {
             return VIEW_TYPE_CONTACT_LIST;
         }
-
     }
 
     private void splitListsByCategory() {
