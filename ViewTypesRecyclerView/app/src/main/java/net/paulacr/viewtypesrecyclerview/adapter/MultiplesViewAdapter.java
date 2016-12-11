@@ -1,4 +1,4 @@
-package net.paulacr.viewtypesrecyclerview;
+package net.paulacr.viewtypesrecyclerview.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -8,24 +8,26 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import net.paulacr.viewtypesrecyclerview.R;
 import net.paulacr.viewtypesrecyclerview.model.Contact;
+import net.paulacr.viewtypesrecyclerview.viewholder.BaseViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class MultiplesViewAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     private static final int VIEW_TYPE_CATEGORY = 0;
     private static final int VIEW_TYPE_LETTER_INDEX = 1;
     private static final int VIEW_TYPE_CONTACT_LIST = 2;
 
-    private List<Contact> familyList;
-    private List<Contact> friendsList;
-    private List<Contact> workList;
+    private List<Contact> familyList = new ArrayList<>();
+    private List<Contact> friendsList = new ArrayList<>();
+    private List<Contact> workList = new ArrayList<>();
     private List<Contact> contactList;
     private List<Contact> recyclerData = new ArrayList<>();
 
-    public Adapter(List<Contact> contactList) {
+    public MultiplesViewAdapter(List<Contact> contactList) {
         this.contactList = contactList;
         splitListsByCategory();
 
@@ -45,22 +47,21 @@ public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    static class ViewHolderCategory extends RecyclerView.ViewHolder {
+    static class ViewHolderCategory extends BaseViewHolder {
 
-        private TextView categoryName;
-        private ImageView categoryIcon;
+        TextView categoryName;
+        ImageView categoryIcon;
 
         public ViewHolderCategory(View view) {
             super(view);
 
             categoryName = (TextView) view.findViewById(R.id.category_name);
-            categoryIcon = (ImageView) view.findViewById(R.id.category_icon);
         }
     }
 
-    static class ViewHolderLetterIndex extends RecyclerView.ViewHolder {
+    static class ViewHolderLetterIndex extends BaseViewHolder {
 
-        private TextView index;
+        TextView index;
 
         public ViewHolderLetterIndex(View view) {
             super(view);
@@ -68,10 +69,10 @@ public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    static class ViewHolderContactList extends RecyclerView.ViewHolder {
+    static class ViewHolderContactList extends BaseViewHolder {
 
-        private TextView contactName;
-        private ImageView contactImage;
+        TextView contactName;
+        ImageView contactImage;
 
         public ViewHolderContactList(View view) {
             super(view);
@@ -81,9 +82,9 @@ public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        RecyclerView.ViewHolder viewHolder;
+        BaseViewHolder viewHolder;
 
         if(viewType == VIEW_TYPE_CATEGORY) {
             View view = LayoutInflater.from(parent.getContext())
@@ -100,15 +101,14 @@ public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
+    public void onBindViewHolder(BaseViewHolder holder, int position) {
         if(getItemViewType(position) == VIEW_TYPE_CATEGORY) {
             ViewHolderCategory viewHolderCategory = (ViewHolderCategory) holder;
 
             //bind views
             String categoria;
             if(position == 0) {
-               categoria = "Family";
+                categoria = "Family";
             } else if(position == familyList.size() + 1) {
                 categoria = "Friends";
             } else {
@@ -143,9 +143,6 @@ public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     private void splitListsByCategory() {
-        familyList = new ArrayList<>();
-        friendsList = new ArrayList<>();
-        workList = new ArrayList<>();
 
         for(int i = 0; i < contactList.size(); i++) {
 

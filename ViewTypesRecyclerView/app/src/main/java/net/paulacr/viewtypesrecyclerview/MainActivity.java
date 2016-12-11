@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import net.paulacr.viewtypesrecyclerview.adapter.MultiplesViewAdapter;
 import net.paulacr.viewtypesrecyclerview.model.Contact;
 
 import java.util.ArrayList;
@@ -23,12 +24,10 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         LinearLayoutManager manager = new LinearLayoutManager(this);
 
-        Adapter adapter = new Adapter(generateContactsList());
+        MultiplesViewAdapter adapter = new MultiplesViewAdapter(generateContactsList());
 
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
-
-
     }
 
     private List<Contact> generateContactsList() {
