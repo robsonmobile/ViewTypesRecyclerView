@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ViewTypesRecyclerView</string>
+    <string name="ligar_para_contato">ligar para contato</string>
 </resources>

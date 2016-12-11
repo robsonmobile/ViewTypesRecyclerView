@@ -50,7 +50,6 @@ public class MultiplesViewAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     static class ViewHolderCategory extends BaseViewHolder {
 
         TextView categoryName;
-        ImageView categoryIcon;
 
         public ViewHolderCategory(View view) {
             super(view);
