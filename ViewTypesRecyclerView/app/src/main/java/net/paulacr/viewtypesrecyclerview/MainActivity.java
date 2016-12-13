@@ -4,12 +4,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import net.paulacr.viewtypesrecyclerview.adapter.MultiplesViewAdapter;
 import net.paulacr.viewtypesrecyclerview.decorator.MultipleViewsItemDecorator;
 import net.paulacr.viewtypesrecyclerview.model.Contact;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 

@@ -10,7 +10,7 @@ public class Contact {
     public enum Category {
             FAMILY,
             FRIENDS,
-            WORK }
+        xxx, WORK }
 
     public String getName() {
         return name;

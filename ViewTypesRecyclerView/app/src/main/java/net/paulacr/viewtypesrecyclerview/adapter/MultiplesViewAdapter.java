@@ -1,7 +1,6 @@
 package net.paulacr.viewtypesrecyclerview.adapter;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,18 +17,15 @@ import java.util.List;
 public class MultiplesViewAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     private static final int VIEW_TYPE_CATEGORY = 0;
-    private static final int VIEW_TYPE_LETTER_INDEX = 1;
-    private static final int VIEW_TYPE_CONTACT_LIST = 2;
+    private static final int VIEW_TYPE_CONTACT_LIST = 1;
 
     private List<Contact> familyList = new ArrayList<>();
     private List<Contact> friendsList = new ArrayList<>();
     private List<Contact> workList = new ArrayList<>();
-    private List<Contact> contactList;
     private List<Contact> recyclerData = new ArrayList<>();
 
     public MultiplesViewAdapter(List<Contact> contactList) {
-        this.contactList = contactList;
-        splitListsByCategory();
+        splitListsByCategory(contactList);
 
         if(!familyList.isEmpty()) {
             recyclerData.add(null);
@@ -55,16 +51,6 @@ public class MultiplesViewAdapter extends RecyclerView.Adapter<BaseViewHolder> {
             super(view);
 
             categoryName = (TextView) view.findViewById(R.id.category_name);
-        }
-    }
-
-    static class ViewHolderLetterIndex extends BaseViewHolder {
-
-        TextView index;
-
-        public ViewHolderLetterIndex(View view) {
-            super(view);
-            index = (TextView) view.findViewById(R.id.letter_index);
         }
     }
 
@@ -105,15 +91,17 @@ public class MultiplesViewAdapter extends RecyclerView.Adapter<BaseViewHolder> {
             ViewHolderCategory viewHolderCategory = (ViewHolderCategory) holder;
 
             //bind views
-            String categoria;
-            if(position == 0) {
-                categoria = "Family";
-            } else if(position == familyList.size() + 1) {
-                categoria = "Friends";
+            String categoryName;
+            Contact.Category category = recyclerData.get(position + 1).getCategory();
+
+            if(category == Contact.Category.FAMILY) {
+                categoryName = "Family";
+            } else if(category == Contact.Category.FRIENDS) {
+                categoryName = "Friends";
             } else {
-                categoria = "Work";
+                categoryName = "Work";
             }
-            viewHolderCategory.categoryName.setText(categoria);
+            viewHolderCategory.categoryName.setText(categoryName);
 
         } else {
             ViewHolderContactList viewHolderContactList = (ViewHolderContactList) holder;
@@ -124,24 +112,20 @@ public class MultiplesViewAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     @Override
     public int getItemCount() {
-        return contactList.size() + 3;
+        return recyclerData.size();
     }
 
     @Override
     public int getItemViewType(int position) {
 
-        if(position == 0) {
-            return VIEW_TYPE_CATEGORY;
-        } else if(position == familyList.size() +1) {
-            return VIEW_TYPE_CATEGORY;
-        } else if(position == friendsList.size() + familyList.size() + 2) {
+        if(recyclerData.get(position) == null) {
             return VIEW_TYPE_CATEGORY;
         } else {
             return VIEW_TYPE_CONTACT_LIST;
         }
     }
 
-    private void splitListsByCategory() {
+    private void splitListsByCategory(List<Contact> contactList) {
 
         for(int i = 0; i < contactList.size(); i++) {
 
