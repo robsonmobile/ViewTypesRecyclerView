@@ -1,16 +1,19 @@
 package net.paulacr.viewtypesrecyclerview.model;
 
 
+import java.util.Comparator;
+
 public class Contact {
 
     private String name;
     private Integer icon;
     private Category category;
+    public String headerTitle;
 
     public enum Category {
             FAMILY,
             FRIENDS,
-        xxx, WORK }
+            WORK }
 
     public String getName() {
         return name;
@@ -35,4 +38,20 @@ public class Contact {
     public void setCategory(Category category) {
         this.category = category;
     }
+
+    public static class CompareContacts implements Comparator<Contact> {
+
+        @Override
+        public int compare(Contact first, Contact second) {
+            if(first.name.compareTo(second.name) > 1) {
+                return 1;
+            } else if(first.name.compareTo(second.name) < 1) {
+                return -1;
+            } else {
+                return 0;
+            }
+        }
+    }
+
+
 }

@@ -12,36 +12,43 @@ import net.paulacr.viewtypesrecyclerview.model.Contact;
 import net.paulacr.viewtypesrecyclerview.viewholder.BaseViewHolder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MultiplesViewAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
-    private static final int VIEW_TYPE_CATEGORY = 0;
+    private static final int VIEW_TYPE_HEADER = 0;
     private static final int VIEW_TYPE_CONTACT_LIST = 1;
+    private List<Object> contactList = new ArrayList<>();
 
-    private List<Contact> familyList = new ArrayList<>();
-    private List<Contact> friendsList = new ArrayList<>();
-    private List<Contact> workList = new ArrayList<>();
-    private List<Contact> recyclerData = new ArrayList<>();
+    public MultiplesViewAdapter(List<Contact> contacts) {
+        buildList(contacts);
+    }
 
-    public MultiplesViewAdapter(List<Contact> contactList) {
-        splitListsByCategory(contactList);
+    private void buildList(List<Contact> contacts) {
 
-        if(!familyList.isEmpty()) {
-            recyclerData.add(null);
-            recyclerData.addAll(familyList);
-        }
+        //Sort list with ascendent letters
+        Collections.sort(contacts, new Contact.CompareContacts());
 
-        if(!friendsList.isEmpty()) {
-            recyclerData.add(null);
-            recyclerData.addAll(friendsList);
-        }
+        for(Contact contact : contacts) {
+            String header = getFirstLetter(contact);
 
-        if(!workList.isEmpty()) {
-            recyclerData.add(null);
-            recyclerData.addAll(workList);
+            if(!contactList.contains(header)) {
+                contactList.add(header); //add header
+            }
+
+            contactList.add(contact); //add contact
         }
     }
+
+    private String getIndexLetter(int position) {
+        return (String) contactList.get(position);
+    }
+
+    private String getFirstLetter(Contact contact) {
+        return String.valueOf(contact.getName().toUpperCase().charAt(0));
+    }
+
 
     static class ViewHolderCategory extends BaseViewHolder {
 
@@ -71,7 +78,7 @@ public class MultiplesViewAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
         BaseViewHolder viewHolder;
 
-        if(viewType == VIEW_TYPE_CATEGORY) {
+        if(viewType == VIEW_TYPE_HEADER) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.view_header_category, parent, false);
 
@@ -87,57 +94,34 @@ public class MultiplesViewAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
-        if(getItemViewType(position) == VIEW_TYPE_CATEGORY) {
+        if(getItemViewType(position) == VIEW_TYPE_HEADER) {
+
             ViewHolderCategory viewHolderCategory = (ViewHolderCategory) holder;
-
-            //bind views
-            String categoryName;
-            Contact.Category category = recyclerData.get(position + 1).getCategory();
-
-            if(category == Contact.Category.FAMILY) {
-                categoryName = "Family";
-            } else if(category == Contact.Category.FRIENDS) {
-                categoryName = "Friends";
-            } else {
-                categoryName = "Work";
-            }
-            viewHolderCategory.categoryName.setText(categoryName);
+            String indexLetter = getIndexLetter(position);
+            viewHolderCategory.categoryName.setText(indexLetter);
 
         } else {
             ViewHolderContactList viewHolderContactList = (ViewHolderContactList) holder;
-            viewHolderContactList.contactName.setText(recyclerData.get(position).getName());
-            viewHolderContactList.contactImage.setImageResource(recyclerData.get(position).getIcon());
+
+            Contact contact = (Contact) contactList.get(position);
+            viewHolderContactList.contactName.setText(contact.getName());
+            viewHolderContactList.contactImage.setImageResource(contact.getIcon());
         }
     }
 
     @Override
     public int getItemCount() {
-        return recyclerData.size();
+        return contactList.size();
     }
 
     @Override
     public int getItemViewType(int position) {
+        Object object = contactList.get(position);
 
-        if(recyclerData.get(position) == null) {
-            return VIEW_TYPE_CATEGORY;
-        } else {
+        if(object instanceof Contact) {
             return VIEW_TYPE_CONTACT_LIST;
-        }
-    }
-
-    private void splitListsByCategory(List<Contact> contactList) {
-
-        for(int i = 0; i < contactList.size(); i++) {
-
-            if(contactList.get(i).getCategory() == Contact.Category.FAMILY) {
-                familyList.add(contactList.get(i));
-
-            } else if(contactList.get(i).getCategory() == Contact.Category.FRIENDS) {
-                friendsList.add(contactList.get(i));
-
-            } else if(contactList.get(i).getCategory() == Contact.Category.WORK) {
-                workList.add(contactList.get(i));
-            }
+        } else {
+            return VIEW_TYPE_HEADER;
         }
     }
 }

@@ -10,6 +10,7 @@ import net.paulacr.viewtypesrecyclerview.decorator.MultipleViewsItemDecorator;
 import net.paulacr.viewtypesrecyclerview.model.Contact;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -34,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private List<Contact> generateContactsList() {
-        List<Contact> contactList = new ArrayList<>();
+        List<Contact> contactList = new LinkedList<>();
 
         Contact contact1 = new Contact();
         contact1.setName("Mãe");
